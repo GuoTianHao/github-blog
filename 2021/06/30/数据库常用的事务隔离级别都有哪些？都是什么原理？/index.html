@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>郭天昊的个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="任何支持事务的数据库，都必须具备四个特性，分别是：原子性（Atomicity）、一致性（Consistency）、隔离性（Isolation）、持久性（Durability），也就是我们常说的事务ACID，这样才能保证事务（（Transaction）中数据的正确性。 而事务的隔离性就是指，多个并发的事务同时访问一个数据库时，一个事务不应该被另一个事务所干扰，每个并发的事务间要相互进行隔离。 如果没">
+<meta property="og:type" content="article">
+<meta property="og:title" content="郭天昊的个人博客">
+<meta property="og:url" content="https://guotianhao.github.io/github-blog/2021/06/30/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E7%9A%84%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB%E9%83%BD%E6%9C%89%E5%93%AA%E4%BA%9B%EF%BC%9F%E9%83%BD%E6%98%AF%E4%BB%80%E4%B9%88%E5%8E%9F%E7%90%86%EF%BC%9F/index.html">
+<meta property="og:site_name" content="郭天昊的个人博客">
+<meta property="og:description" content="任何支持事务的数据库，都必须具备四个特性，分别是：原子性（Atomicity）、一致性（Consistency）、隔离性（Isolation）、持久性（Durability），也就是我们常说的事务ACID，这样才能保证事务（（Transaction）中数据的正确性。 而事务的隔离性就是指，多个并发的事务同时访问一个数据库时，一个事务不应该被另一个事务所干扰，每个并发的事务间要相互进行隔离。 如果没">
+<meta property="og:locale">
+<meta property="article:published_time" content="2021-06-29T23:17:30.505Z">
+<meta property="article:modified_time" content="2021-06-10T15:13:01.433Z">
+<meta property="article:author" content="郭天昊">
+<meta property="article:tag" content="java,redis,vagrant">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/github-blog/atom.xml" title="郭天昊的个人博客" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/github-blog/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/github-blog/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/github-blog/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/github-blog/" id="logo">郭天昊的个人博客</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/github-blog/">Home</a>
+        
+          <a class="main-nav-link" href="/github-blog/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/github-blog/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Suche"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://guotianhao.github.io/github-blog"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-数据库常用的事务隔离级别都有哪些？都是什么原理？" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/github-blog/2021/06/30/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E7%9A%84%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB%E9%83%BD%E6%9C%89%E5%93%AA%E4%BA%9B%EF%BC%9F%E9%83%BD%E6%98%AF%E4%BB%80%E4%B9%88%E5%8E%9F%E7%90%86%EF%BC%9F/" class="article-date">
+  <time class="dt-published" datetime="2021-06-29T23:17:30.505Z" itemprop="datePublished">2021-06-30</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>任何支持事务的数据库，都必须具备四个特性，分别是：原子性（Atomicity）、一致性（Consistency）、隔离性（Isolation）、持久性（Durability），也就是我们常说的事务ACID，这样才能保证事务（（Transaction）中数据的正确性。</p>
+<p>而事务的隔离性就是指，多个并发的事务同时访问一个数据库时，一个事务不应该被另一个事务所干扰，每个并发的事务间要相互进行隔离。</p>
+<p>如果没有事务隔离，会出现什么样的情况呢？</p>
+<p>假设我们现在有这样一张表（T），里面记录了很多牛人的名字，我们不进行事务的隔离看看会发生什么呢？</p>
+<p>第一天，事务A访问了数据库，它干了一件事情，往数据库里加上了新来的牛人的名字，但是没有提交事务。</p>
+<p>insert into T values (4, ‘牛D’);</p>
+<p>这时，来了另一个事务B，他要查询所有牛人的名字。</p>
+<p>select Name from T;</p>
+<p>这时，如果没有事务之间没有有效隔离，那么事务B返回的结果中就会出现“牛D”的名字。这就是“脏读（dirty read）”。</p>
+<p>第二天，事务A访问了数据库，他要查看ID是1的牛人的名字，于是执行了</p>
+<p>select Name from T where ID = 1;</p>
+<p>这时，事务B来了，因为ID是1的牛人改名字了，所以要更新一下，然后提交了事务。</p>
+<p>update T set Name = ‘不牛’ where ID = 1;</p>
+<p>接着，事务A还想再看看ID是1的牛人的名字，于是又执行了</p>
+<p>select Name from T where ID = 1;</p>
+<p>结果，两次读出来的ID是1的牛人名字竟然不相同，这就是不可重复读（unrepeatable read）。</p>
+<p>第三天，事务A访问了数据库，他想要看看数据库的牛人都有哪些，于是执行了</p>
+<p>select * from T;</p>
+<p>这时候，事务B来了，往数据库加入了一个新的牛人。</p>
+<p>insert into T values(4, ‘牛D’);</p>
+<p>这时候，事务A忘了刚才的牛人都有哪些了，于是又执行了。</p>
+<p>select * from T;</p>
+<p>结果，第一次有三个牛人，第二次有四个牛人。</p>
+<p>相信这个时候事务A就蒙了，刚才发生了什么？这种情况就叫“幻读（phantom problem）”。</p>
+<p>为了防止出现脏读、不可重复读、幻读等情况，我们就需要根据我们的实际需求来设置数据库的隔离级别。</p>
+<p>数据库都有哪些隔离级别呢？</p>
+<p>一般的数据库，都包括以下四种隔离级别：</p>
+<p>读未提交（Read Uncommitted）<br>读提交（Read Committed）<br>可重复读（Repeated Read）<br>串行化（Serializable）<br>如何使用这些隔离级别，那就需要根据业务的实际情况来进行判断了。</p>
+<p>我们接下来就看看这四个隔离级别的具体情况</p>
+<p>读未提交（Read Uncommitted）</p>
+<p>读未提交，顾名思义，就是可以读到未提交的内容。</p>
+<p>因此，在这种隔离级别下，查询是不会加锁的，也由于查询的不加锁，所以这种隔离级别的一致性是最差的，可能会产生“脏读”、“不可重复读”、“幻读”。</p>
+<p>如无特殊情况，基本是不会使用这种隔离级别的。</p>
+<p>读提交（Read Committed）</p>
+<p>读提交，顾名思义，就是只能读到已经提交了的内容。</p>
+<p>这是各种系统中最常用的一种隔离级别，也是SQL Server和Oracle的默认隔离级别。这种隔离级别能够有效的避免脏读，但除非在查询中显示的加锁，如：</p>
+<p>select * from T where ID=2 lock in share mode;</p>
+<p>select * from T where ID=2 for update;</p>
+<p>不然，普通的查询是不会加锁的。</p>
+<p>那为什么“读提交”同“读未提交”一样，都没有查询加锁，但是却能够避免脏读呢？</p>
+<p>这就要说道另一个机制“快照（snapshot）”，而这种既能保证一致性又不加锁的读也被称为“快照读（Snapshot Read）”</p>
+<p>假设没有“快照读”，那么当一个更新的事务没有提交时，另一个对更新数据进行查询的事务会因为无法查询而被阻塞，这种情况下，并发能力就相当的差。</p>
+<p>而“快照读”就可以完成高并发的查询，不过，“读提交”只能避免“脏读”，并不能避免“不可重复读”和“幻读”。</p>
+<p>可重复读(Repeated Read)</p>
+<p>可重复读，顾名思义，就是专门针对“不可重复读”这种情况而制定的隔离级别，自然，它就可以有效的避免“不可重复读”。而它也是MySql的默认隔离级别。</p>
+<p>在这个级别下，普通的查询同样是使用的“快照读”，但是，和“读提交”不同的是，当事务启动时，就不允许进行“修改操作（Update）”了，而“不可重复读”恰恰是因为两次读取之间进行了数据的修改，因此，“可重复读”能够有效的避免“不可重复读”，但却避免不了“幻读”，因为幻读是由于“插入或者删除操作（Insert or Delete）”而产生的。</p>
+<p>串行化（Serializable）</p>
+<p>这是数据库最高的隔离级别，这种级别下，事务“串行化顺序执行”，也就是一个一个排队执行。</p>
+<p>这种级别下，“脏读”、“不可重复读”、“幻读”都可以被避免，但是执行效率奇差，性能开销也最大，所以基本没人会用。</p>
+<p>总结一下</p>
+<p>为什么会出现“脏读”？因为没有“select”操作没有规矩。</p>
+<p>为什么会出现“不可重复读”？因为“update”操作没有规矩。</p>
+<p>为什么会出现“幻读”？因为“insert”和“delete”操作没有规矩。</p>
+<p>“读未提（Read Uncommitted）”能预防啥？啥都预防不了。</p>
+<p>“读提交（Read Committed）”能预防啥？使用“快照读（Snapshot Read）”，避免“脏读”，但是可能出现“不可重复读”和“幻读”。</p>
+<p>“可重复读（Repeated Red）”能预防啥？使用“快照读（Snapshot Read）”，锁住被读取记录，避免出现“脏读”、“不可重复读”，但是可能出现“幻读”。</p>
+<p>“串行化（Serializable）”能预防啥？排排坐，吃果果，有效避免“脏读”、“不可重复读”、“幻读”，不过效果谁用谁知道。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://guotianhao.github.io/github-blog/2021/06/30/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E7%9A%84%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB%E9%83%BD%E6%9C%89%E5%93%AA%E4%BA%9B%EF%BC%9F%E9%83%BD%E6%98%AF%E4%BB%80%E4%B9%88%E5%8E%9F%E7%90%86%EF%BC%9F/" data-id="ckqio8h3t0007k8ve0ei4bkru" data-title="" class="article-share-link">Teilen</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/github-blog/2021/06/30/%E4%BD%BF%E7%94%A8%E5%AF%86%E9%92%A5%E8%BF%9E%E6%8E%A5%E6%9C%8D%E5%8A%A1%E5%99%A8/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Älter</strong>
+      <div class="article-nav-title"></div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archiv</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/github-blog/archives/2021/06/">June 2021</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">letzter Beitrag</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/github-blog/2021/06/30/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E7%94%A8%E7%9A%84%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB%E9%83%BD%E6%9C%89%E5%93%AA%E4%BA%9B%EF%BC%9F%E9%83%BD%E6%98%AF%E4%BB%80%E4%B9%88%E5%8E%9F%E7%90%86%EF%BC%9F/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/github-blog/2021/06/30/%E4%BD%BF%E7%94%A8%E5%AF%86%E9%92%A5%E8%BF%9E%E6%8E%A5%E6%9C%8D%E5%8A%A1%E5%99%A8/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/github-blog/2021/06/30/%E8%B0%B7%E7%B2%92%E5%95%86%E6%88%90%E7%AC%94%E8%AE%B0-docker%20mysql&redis%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/github-blog/2021/06/30/%E8%B0%B7%E7%B2%92%E5%95%86%E6%88%90-nacos&%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/github-blog/2021/06/30/README/">(no title)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2021 郭天昊<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/github-blog/" class="mobile-nav-link">Home</a>
+  
+    <a href="/github-blog/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/github-blog/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/github-blog/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/github-blog/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
